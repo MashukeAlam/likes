@@ -6,6 +6,19 @@ class FeaturesController < ApplicationController
     @features = Feature.all
   end
 
+  def listing
+    print("\n\n\n\nHere")
+    features = Feature.where(feature_name: params[:feature_name])
+                      .where.not(user_id: current_user.id)
+                      .order("RANDOM()")
+
+    if features.empty?
+      render json: { error: 'No features found' }, status: :not_found
+    else
+      render json: features, status: 200
+    end
+  end
+
   # GET /features/1 or /features/1.json
   def show
   end
