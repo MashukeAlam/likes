@@ -8,4 +8,6 @@ Rails.application.routes.draw do
   # root "articles#index"
   root 'home#index'
   get 'terms' => 'home#terms'
+  resources :features, only: [:new, :create, :index]
+
 end

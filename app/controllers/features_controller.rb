@@ -13,6 +13,8 @@ class FeaturesController < ApplicationController
   # GET /features/new
   def new
     @feature = Feature.new
+    selected_id = params[:feature_name].to_i if params[:feature_name]
+    @selected = Feature.feature_names.key(selected_id) if selected_id
   end
 
   # GET /features/1/edit

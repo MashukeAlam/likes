@@ -13,7 +13,7 @@
 
   <div class="my-5">
     <%= form.label :feature_name %>
-    <%= form.number_field :feature_name, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
+    <%= form.select :feature_name, Feature.feature_names.keys.map { |feature| [feature.humanize, feature] }, prompt: "Select a feature", selected: @selected %>
   </div>
 
   <div class="my-5">
