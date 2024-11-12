@@ -4,8 +4,9 @@ const timeLeft = document.getElementById("timeLeft");
 let videos = [];
 let currentVideoIndex = 0;
 let intervalId;
+document.body.addEventListener("load", () => {
 
-console.log("jim")
+})
 
 const fetchAllContents = async (feature_name) => {
     // Feature name, modify this as needed

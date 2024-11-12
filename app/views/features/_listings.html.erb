@@ -1,12 +1,65 @@
 <div class="flex">
   <div>
     <button onclick="fetchAllContents('<%= @feature.feature_name %>')" id="startButton" class="btn btn-primary">Start Watching</button>
-    <iframe id="ytplayer" type="text/html" width="640" height="360"
-            src=""
-            frameborder="0"></iframe>
+    <div id="player"></div>
   </div>
 
   <div class="flex items-center justify-center w-full p-5 font-large">
     <p>You will get <span id="creditReward"></span> credits after <span id="timeLeft"></span> seconds</p>
   </div>
 </div>
+<script>
+    const videoIds = [
+        'M7lc1UVf-VE', // Add your YouTube video IDs here
+        'dQw4w9WgXcQ',
+        '9bZkp7q19f0'
+    ];
+
+    let currVideoIndex = 0;
+
+    const tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    const firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    var player;
+    function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+            height: '390',
+            width: '640',
+            videoId: videoIds[currVideoIndex],
+            playerVars: {
+                'playsinline': 1
+            },
+            events: {
+                'onReady': onPlayerReady,
+                'onStateChange': onPlayerStateChange
+            }
+        });
+    }
+
+    function onPlayerReady(event) {
+        event.target.playVideo();
+    }
+
+    var done = false;
+    function onPlayerStateChange(event) {
+        if (event.data === YT.PlayerState.PLAYING && !done) {
+            setTimeout(() => {
+                stopVideo();
+                currVideoIndex = (currVideoIndex + 1) % videoIds.length; // Move to the next video
+                loadNextVideo();
+            }, 10000); // Play for 10 seconds before switching
+            done = true;
+        }
+    }
+
+    function stopVideo() {
+        player.stopVideo();
+    }
+
+    function loadNextVideo() {
+        player.loadVideoById(videoIds[currVideoIndex]);
+        done = false; // Reset to allow playing the new video for 10 seconds
+    }
+</script>
