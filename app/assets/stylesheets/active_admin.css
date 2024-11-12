@@ -1,0 +1,13 @@
+/* Active Admin's Base Styles (ensure you have included these CSS files separately in your project) */
+
+/* Example of overriding sidebar width (replace with the actual value used in the Sass variable) */
+.sidebar {
+    width: 242px;
+}
+
+/* Example of overriding the status tag color */
+.status_tag {
+    background: #6090DB;
+}
+
+/* Add more custom overrides as needed */
