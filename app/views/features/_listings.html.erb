@@ -98,7 +98,7 @@
               return response.json();
           })
           .then(data => {
-              console.log('Success:', data);
+              updateCreditDisplay(data.data);
           })
           .catch(error => {
               console.error('Error:', error);

@@ -5,6 +5,17 @@ let videos = [];
 let currentVideoIndex = 0;
 let intervalId;
 
+function updateCreditDisplay(newCreditAmount) {
+    const creditElement = document.getElementById('credit-amount');
+    creditElement.classList.add('opacity-0'); // Fade out
+
+    setTimeout(() => {
+        creditElement.innerText = newCreditAmount;
+        creditElement.classList.remove('opacity-0'); // Fade in
+    }, 300); // Wait for the fade-out duration before changing the text
+}
+
+
 const fetchAllContents = async (feature_name) => {
     console.log(feature_name);
     try {
