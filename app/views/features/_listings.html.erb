@@ -5,29 +5,42 @@
   </div>
 
   <div class="flex items-center justify-center w-full p-5 font-large">
-    <p>You will get <span id="creditReward"></span> credits after <span id="timeLeft"></span> seconds</p>
+    <p id="notice">Earn credits after watching videos for 10 seconds...</p>
   </div>
 </div>
 <script>
-    const videoIds = [
-        'M7lc1UVf-VE', // Add your YouTube video IDs here
-        'dQw4w9WgXcQ',
-        '9bZkp7q19f0'
-    ];
-
+    let videoData = []
     let currVideoIndex = 0;
-
+    let isPlayerReady = false;
+    const notice = document.getElementById('notice');
     const tag = document.createElement('script');
+    const userId = <%= current_user.id %>;
+
     tag.src = "https://www.youtube.com/iframe_api";
+
     const firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
     var player;
+
+    function extractYouTubeVideoID(url) {
+        try {
+            const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:shorts\/|watch\?v=|embed\/|[^\/\n\s]+\/\S+\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+            const match = url.match(regex);
+            if (match && match[1]) {
+                return match[1];
+            } else {
+                throw new Error("Invalid YouTube URL");
+            }
+        } catch (error) {
+            return error.message;
+        }
+    }
+
     function onYouTubeIframeAPIReady() {
         player = new YT.Player('player', {
             height: '390',
             width: '640',
-            videoId: videoIds[currVideoIndex],
+            videoId: extractYouTubeVideoID(videoData[currentVideoIndex]['link']) || 'jNQXAC9IVRw',
             playerVars: {
                 'playsinline': 1
             },
@@ -39,7 +52,8 @@
     }
 
     function onPlayerReady(event) {
-        event.target.playVideo();
+        notice.innerHTML = `You will get ${videoData[currVideoIndex]['reward']} credits after watching this video...`;
+        isPlayerReady = true;
     }
 
     var done = false;
@@ -47,8 +61,9 @@
         if (event.data === YT.PlayerState.PLAYING && !done) {
             setTimeout(() => {
                 stopVideo();
-                currVideoIndex = (currVideoIndex + 1) % videoIds.length; // Move to the next video
+                currVideoIndex = (currVideoIndex + 1) % videoData.length; // Move to the next video
                 loadNextVideo();
+                notice.innerHTML = `You will get ${videoData[currVideoIndex]['reward']} credits after watching this video...`;
             }, 10000); // Play for 10 seconds before switching
             done = true;
         }
@@ -59,7 +74,37 @@
     }
 
     function loadNextVideo() {
-        player.loadVideoById(videoIds[currVideoIndex]);
+        const apiUrl = '/feature_consumptions';
+        const payload = {
+            feature_consumption: {
+                user_id: userId,
+                feature_id: videoData[currVideoIndex]['id'],
+                consumption_type: 'watch'     // Can be 'watch' or 'like'
+            }
+        };
+
+        fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content // For Rails CSRF protection
+            },
+            body: JSON.stringify(payload)
+        })
+          .then(response => {
+              if (!response.ok) {
+                  throw new Error(`HTTP error! Status: ${response.status}`);
+              }
+              return response.json();
+          })
+          .then(data => {
+              console.log('Success:', data);
+          })
+          .catch(error => {
+              console.error('Error:', error);
+          });
+
+        player.loadVideoById(extractYouTubeVideoID(videoData[currVideoIndex]['link']));
         done = false; // Reset to allow playing the new video for 10 seconds
     }
 </script>

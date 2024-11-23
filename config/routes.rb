@@ -5,6 +5,9 @@ Rails.application.routes.draw do
   get 'home/index'
   root 'home#index'
   get 'terms' => 'home#terms'
+
+  resources :feature_consumptions, only: [:create]
+
   resources :features do
     collection do
       get :listing

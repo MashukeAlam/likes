@@ -1,0 +1,2 @@
+module FeatureConsumptionsHelper
+end

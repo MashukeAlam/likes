@@ -4,63 +4,21 @@ const timeLeft = document.getElementById("timeLeft");
 let videos = [];
 let currentVideoIndex = 0;
 let intervalId;
-document.body.addEventListener("load", () => {
-
-})
 
 const fetchAllContents = async (feature_name) => {
-    // Feature name, modify this as needed
-    const featureName = feature_name;
-
-    console.log(feature_name)
-
+    console.log(feature_name);
     try {
-        const response = await fetch(`/features/listing?feature_name=${featureName}`);
+        const response = await fetch(`/features/listing?feature_name=youtube_views`);
         if (!response.ok) throw new Error("Failed to fetch videos");
 
-        videos = await response.json();
-        if (videos.length === 0) {
+        videoData = await response.json();
+        if (videoData.length === 0) {
             alert("No videos available for this feature.");
-            return;
         }
-
-        // Start showing videos
-        currentVideoIndex = 0;
-        showVideo(videos[currentVideoIndex]);
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     } catch (error) {
         console.error("Error fetching videos:", error);
     }
-}
-
-function showVideo(video) {
-    if (!video) return;
-    const ytPlayer = document.getElementById("ytplayer");
-
-    // Set the iframe source and credit reward
-    ytPlayer.src = `${video.link}?autoplay=1&origin=http://example.com`;
-    creditReward.textContent = video.reward;
-    let secondsLeft = 10;
-    timeLeft.textContent = secondsLeft;
-
-    // Set interval to countdown and proceed to the next video
-    intervalId = setInterval(() => {
-        secondsLeft--;
-        timeLeft.textContent = secondsLeft;
-
-        if (secondsLeft === 0) {
-            clearInterval(intervalId);
-            addReward(video.reward);
-            deductCredit(video.id);
-
-            // Move to the next video
-            currentVideoIndex++;
-            if (currentVideoIndex < videos.length) {
-                showVideo(videos[currentVideoIndex]);
-            } else {
-                alert("All videos watched.");
-            }
-        }
-    }, 1000);
 }
 
 function addReward(reward) {

@@ -7,9 +7,9 @@ class FeaturesController < ApplicationController
   end
 
   def listing
-    print("\n\n\n\nHere")
+    print("\n\n\n\nHere#{params}\n\n")
     features = Feature.where(feature_name: params[:feature_name])
-                      .where.not(user_id: current_user.id)
+                      # .where.not(user_id: current_user.id)
                       .order("RANDOM()")
 
     if features.empty?
