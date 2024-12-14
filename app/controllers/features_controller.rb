@@ -1,15 +1,16 @@
 class FeaturesController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_feature, only: %i[ show edit update destroy ]
 
   # GET /features or /features.json
   def index
-    @features = Feature.all
+    @features = Feature.where(user_id: current_user.id)
   end
 
   def listing
     print("\n\n\n\nHere#{params}\n\n")
     features = Feature.where(feature_name: params[:feature_name])
-                      # .where.not(user_id: current_user.id)
+                      .where.not(id: FeatureConsumption.where(user_id: current_user.id).select(:feature_id))
                       .order("RANDOM()")
 
     if features.empty?
