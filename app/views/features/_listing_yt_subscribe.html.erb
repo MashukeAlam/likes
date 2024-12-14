@@ -1,0 +1,13 @@
+<div class="flex flex-col">
+  <div>
+    <button onclick="" id="subButton" type="button" class="text-white bg-gradient-to-br from-orange-500 to-cyan-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-red-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 disabled">Start Subscribing</button>
+  </div>
+</div>
+
+<script>
+    let videoData = [];
+    let index = 0;
+    const userId = <%= current_user.id %>;
+
+    fetchAllContentsForSubscriptions();
+</script>

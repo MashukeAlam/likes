@@ -48,8 +48,31 @@ const offerVideosForLiking = async () => {
         if (index >= LIMIT) {
             fetchAllContentsForLikes();
             index = 0;
+        } else {
+            likeButton.textContent = `Start Liking to get ${videoData[index]['reward']} rewards`;
         }
-        likeButton.textContent = `Start Liking to get ${videoData[index]['reward']} rewards`;
+    })
+}
+
+const offerVideosForSubscribing = async () => {
+    const subButton = document.getElementById("subButton");
+
+    if (subButton.classList.contains("disabled")) {
+        subButton.classList.remove("disabled");
+    }
+
+    subButton.textContent = `Start Subscribing to get ${videoData[index]['reward']} rewards`;
+
+    subButton.addEventListener("click", () => {
+        window.open(`${videoData[index]['link']}`, "_blank");
+        consumeFeatureAndUpdateCredits(videoData[index]['id']);
+        index += 1;
+        if (index >= LIMIT) {
+            fetchAllContentsForSubscriptions();
+            index = 0;
+        } else {
+            subButton.textContent = `Start Liking to get ${videoData[index]['reward']} rewards`;
+        }
     })
 }
 
@@ -63,7 +86,24 @@ const fetchAllContentsForLikes = async () => {
         if (videoData.length === 0) {
             alert("No videos available for this feature.");
         } else {
-            offerVideosForLiking();
+            await offerVideosForLiking();
+        }
+    } catch (error) {
+        console.error("Error fetching videos:", error);
+    }
+}
+
+const fetchAllContentsForSubscriptions = async () => {
+    try {
+        const response = await fetch(`/features/listing?feature_name=youtube_subscribe`);
+        if (!response.ok) throw new Error("Failed to fetch videos");
+
+        videoData = await response.json();
+        console.log(videoData);
+        if (videoData.length === 0) {
+            alert("No videos available for this feature.");
+        } else {
+            await offerVideosForSubscribing();
         }
     } catch (error) {
         console.error("Error fetching videos:", error);
@@ -91,4 +131,35 @@ function deductCredit(videoId) {
             if (!response.ok) throw new Error("Failed to deduct credit from video owner");
         })
         .catch(error => console.error("Error deducting credit:", error));
+}
+
+function consumeFeatureAndUpdateCredits(featureIndex) {
+    const apiUrl = '/feature_consumptions';
+    const payload = {
+        feature_consumption: {
+            feature_id: featureIndex,
+            consumption_type: 'like'     // Can be 'watch' or 'like'
+        }
+    };
+
+    fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content // For Rails CSRF protection
+        },
+        body: JSON.stringify(payload)
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            updateCreditDisplay(data.data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
 }

@@ -1,6 +1,7 @@
 class FeatureConsumptionsController < ApplicationController
   def create
     feature_consumption = FeatureConsumption.new(feature_consumption_params)
+    feature_consumption.user_id = current_user.id
 
     if feature_consumption.save
 
