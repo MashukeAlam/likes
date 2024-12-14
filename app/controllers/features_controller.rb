@@ -11,7 +11,9 @@ class FeaturesController < ApplicationController
     print("\n\n\n\nHere#{params}\n\n")
     features = Feature.where(feature_name: params[:feature_name])
                       .where.not(id: FeatureConsumption.where(user_id: current_user.id).select(:feature_id))
+                      .select(:id, :link, :reward, :feature_name)
                       .order("RANDOM()")
+                      .limit(5)
 
     if features.empty?
       render json: { error: 'No features found' }, status: :not_found
@@ -29,6 +31,7 @@ class FeaturesController < ApplicationController
     @feature = Feature.new
     selected_id = params[:feature_name].to_i if params[:feature_name]
     @selected = Feature.feature_names.key(selected_id) if selected_id
+    @feature.feature_name =@selected if @selected
   end
 
   # GET /features/1/edit

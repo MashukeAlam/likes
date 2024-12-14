@@ -1,0 +1,46 @@
+<div class="flex flex-col">
+  <div>
+    <button onclick="" id="likeButton" type="button" class="text-white bg-gradient-to-br from-red-500 to-pink-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-red-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 disabled">Start Liking</button>
+
+  </div>
+</div>
+
+<script>
+  let videoData = [];
+  let index = 0;
+  const userId = <%= current_user.id %>;
+
+  fetchAllContentsForLikes('<%= @feature.feature_name %>');
+
+  function consumeFeatureAndUpdateCredits(featureIndex) {
+      const apiUrl = '/feature_consumptions';
+      const payload = {
+          feature_consumption: {
+              user_id: userId,
+              feature_id: featureIndex,
+              consumption_type: 'like'     // Can be 'watch' or 'like'
+          }
+      };
+
+      fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content // For Rails CSRF protection
+          },
+          body: JSON.stringify(payload)
+      })
+          .then(response => {
+              if (!response.ok) {
+                  throw new Error(`HTTP error! Status: ${response.status}`);
+              }
+              return response.json();
+          })
+          .then(data => {
+              updateCreditDisplay(data.data);
+          })
+          .catch(error => {
+              console.error('Error:', error);
+          });
+  }
+</script>
