@@ -11,16 +11,13 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.0].define(version: 2024_11_23_135419) do
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
-
   create_table "active_admin_comments", force: :cascade do |t|
     t.string "namespace"
     t.text "body"
     t.string "resource_type"
-    t.bigint "resource_id"
+    t.integer "resource_id"
     t.string "author_type"
-    t.bigint "author_id"
+    t.integer "author_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["author_type", "author_id"], name: "index_active_admin_comments_on_author"
@@ -41,7 +38,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_23_135419) do
   end
 
   create_table "credits", force: :cascade do |t|
-    t.bigint "user_id", null: false
+    t.integer "user_id", null: false
     t.integer "amount"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -49,8 +46,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_23_135419) do
   end
 
   create_table "feature_consumptions", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.bigint "feature_id", null: false
+    t.integer "user_id", null: false
+    t.integer "feature_id", null: false
     t.integer "consumption_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -64,7 +61,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_23_135419) do
     t.integer "reward", default: 3
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
+    t.integer "user_id"
     t.index ["user_id"], name: "index_features_on_user_id"
   end
 

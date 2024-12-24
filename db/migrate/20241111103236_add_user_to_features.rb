@@ -3,6 +3,11 @@ class AddUserToFeatures < ActiveRecord::Migration[7.0]
     add_reference :features, :user, null: true, foreign_key: true
 
     default_user = User.last # Replace with appropriate user
+
+    if default_user.nil?
+      return
+    end
+    
     Feature.where(user_id: nil).update_all(user_id: default_user.id)
     change_column_null :features, :user_id, false
   end
