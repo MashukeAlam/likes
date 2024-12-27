@@ -2,7 +2,7 @@ class FeatureConsumption < ApplicationRecord
   belongs_to :user
   belongs_to :feature
 
-  enum consumption_type:{ watch: 0, like: 1 }
+  enum :consumption_type, { watch: 0, like: 1 }
 
   after_create :adjust_credit
 

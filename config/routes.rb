@@ -1,6 +1,4 @@
 Rails.application.routes.draw do
-  devise_for :admin_users, ActiveAdmin::Devise.config
-  ActiveAdmin.routes(self)
   devise_for :users
   get 'home/index'
   root 'home#index'
@@ -11,6 +9,12 @@ Rails.application.routes.draw do
   resources :features do
     collection do
       get :listing
+    end
+  end
+
+  resources :admin do
+    collection do
+      get :credits
     end
   end
 end

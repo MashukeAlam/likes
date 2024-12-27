@@ -11,6 +11,10 @@ class User < ApplicationRecord
 
   validates :username, presence: true, uniqueness: true
 
+  def self.ransackable_attributes(auth_object = nil)
+    ["created_at", "email", "encrypted_password", "id", "id_value", "remember_created_at", "reset_password_sent_at", "reset_password_token", "updated_at", "username"]
+  end
+
   def get_current_credit
     # Check if the user has an associated credit record
     if credit.nil?
