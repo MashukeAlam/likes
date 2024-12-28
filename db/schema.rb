@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_12_27_114143) do
+ActiveRecord::Schema[8.0].define(version: 2024_12_28_051852) do
   create_table "active_admin_comments", force: :cascade do |t|
     t.string "namespace"
     t.text "body"
@@ -75,12 +75,13 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_27_114143) do
   create_table "payments", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "amount"
-    t.string "payment_method"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "approved", default: false, null: false
     t.string "transaction_info"
     t.string "phone_number"
+    t.integer "payment_method"
+    t.boolean "archived", default: false
     t.index ["user_id"], name: "index_payments_on_user_id"
   end
 

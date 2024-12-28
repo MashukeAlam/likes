@@ -3,7 +3,7 @@ class Payment < ApplicationRecord
 
   enum :payment_method, { :bkash => 0, :faucet => 1 }
 
-  validates :payment_method, inclusion: { in: payment_methods.keys }
+  validates :payment_method, presence: true, inclusion: { in: payment_methods.keys }
   validates :transaction_info, presence: true, length: { maximum: 500 }
   validates :phone_number, presence: true, length: { maximum: 15 }
 
